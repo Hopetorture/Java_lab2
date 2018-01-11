@@ -1,55 +1,51 @@
 //import java.applet.Applet;
 //import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.LinkedList;
+import java.awt.event.*;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.List;
+
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
+import org.jgrapht.Graph;
 import sun.awt.WindowClosingListener;
 
 import javax.swing.*;
+import javax.xml.soap.Text;
 
 
-public class MyApp extends JFrame {
-    public MyApp(){
+public class MyApp extends Frame implements ActionListener, MouseListener, ComponentListener {
+
+    Menu setGraphMenu;
+    MenuBar mb;
+    Graph<Node, Integer> graph;
+
+    public MyApp(String title){
+        super(title);
         addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent we)
             {System.exit(0);}
         });
 
-//        addMouseListener(new MouseAdapter(){
-//            public void mouseClicked(MouseEvent me){
-//                int []mx = new int [4];
-//                int []my = new int [4];
-//
-//                int x = me.getX();
-//                int y = me.getY();
-//
-//                mx[0] = x-10; my[0] = y;
-//                mx[1] = x;    my[1] = y-15;
-//                mx[2] = x +10;my[2] = y;
-//                mx[3] = x;    my[3] = y+15;
-//
-//                Graphics g = getGraphics();
-//                g.setColor(new Color(100,120,0));
-//                g.fillPolygon(mx,my,4);
-
-//            }
-//        });
         init();
-        //Graphics g = this.getGraphics();
-        //g.drawOval(5, 10, 5 , 10);
     }
 
     public void init(){
-        //setLayout(new BorderLayout());
-        MenuBar mb = new MenuBar();
+
+        addMouseListener(this);
+        addComponentListener(this);
+        setLayout(new BorderLayout());
+
+
+        mb = new MenuBar();
         this.setMenuBar(mb);
-        Menu graph = new Menu("Граф");
-        mb.add(graph);
+
+        setGraphMenu = new Menu("Граф");
+        mb.add(setGraphMenu);
         MenuItem create = new MenuItem("Создать");
-        graph.add(create);
+        setGraphMenu.add(create);
+
         create.addActionListener(e -> {
             System.out.println("test");
             LinkedList<Label> labels = new LinkedList<>(); // сделать список int-ов TODO
@@ -63,13 +59,6 @@ public class MyApp extends JFrame {
             GridLayout gl = new GridLayout(0,10);
             d.setLayout(gl);
 
-
-//            d.add(new Label("1"));
-//            d.add(new Label("2"));
-//            d.add(new Label("3"));
-//            d.add(new Label("4"));
-//            d.add(new Label("5"));
-//            d.add(new Label("6"));
             d.add(new Label("X"));
             for (Label l : labels){
                 d.add(l);
@@ -81,12 +70,40 @@ public class MyApp extends JFrame {
             //d.add(new TextField("0",1));
 
 //
+            HashMap<Integer, ArrayList<TextField>> inputDict = new HashMap<>();
+            //inputDict.
             for (int i = 0; i < 9; i++){
                 d.add(new Label(labels.get(i).getText()));
+                inputDict.put(i, new ArrayList<TextField>());
                 for (int j = 0; j <= 8; j++){
-                    d.add(new TextField("0",1));
+                    TextField f = new TextField("0",1);
+                    d.add(f);
+                    inputDict.get(i).add(f);
+
                 }
             }
+            for (int i = 0; i < 9; i++){
+                System.out.println(inputDict.get(i).get(0).getText());
+            }
+
+            for (int i = 0; i < 4; i++) d.add(new Label(""));
+            Button OK = new Button("Ok");
+            OK.addActionListener(e1 -> {
+                System.out.println("123123");
+            });
+            d.add(OK);
+
+
+            Button cancel = new Button("Cancel");
+            cancel.addActionListener(e1 -> {d.dispose();});
+
+            d.add(cancel);
+
+            Button templateGraph = new Button("Test Graph");
+            templateGraph.addActionListener(e1 -> {
+
+            });
+
 
 //            GroupLayout gl = new GroupLayout(d);
 //            d.setLayout(gl);
@@ -120,7 +137,7 @@ public class MyApp extends JFrame {
 
 
         MenuItem createFromTemplate = new MenuItem("Создать из шаблона");
-        graph.add(createFromTemplate);
+        setGraphMenu.add(createFromTemplate);
         createFromTemplate.addActionListener(e -> {
             System.out.println("from template");
         });
@@ -137,6 +154,7 @@ public class MyApp extends JFrame {
             Object v2 = grph.insertVertex(parent, null, "World!", 240, 150,
                     80, 30);
             grph.insertEdge(parent, null, "Edge", v1, v2);
+
             System.out.println(grph.getCellStyle(v1));
         }
         finally
@@ -145,7 +163,7 @@ public class MyApp extends JFrame {
         }
 
         mxGraphComponent graphComponent = new mxGraphComponent(grph);
-        this.getContentPane().add(graphComponent);
+        //this.getContentPane().add(graphComponent);
         //this.getLayout().layoutContainer(graphComponent);
         //this.lay
         //add(new Frame());
@@ -155,4 +173,16 @@ public class MyApp extends JFrame {
 
 
     }
+    public void actionPerformed(ActionEvent av){repaint();}
+    public void componentResized(ComponentEvent e){repaint();}
+    public void mouseClicked(MouseEvent me){}
+    public void mouseEntered(MouseEvent arg0) {}
+    public void mouseExited(MouseEvent arg0) {}
+    public void mousePressed(MouseEvent e){}
+    public void mouseReleased(MouseEvent e){}
+
+    public void componentHidden(ComponentEvent arg0) {}
+    public void componentMoved(ComponentEvent arg0) {}
+    public void componentShown(ComponentEvent arg0) {}
+
 }
