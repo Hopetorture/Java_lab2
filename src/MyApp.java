@@ -1,12 +1,17 @@
 //import java.applet.Applet;
 //import javax.swing.*;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.LinkedList;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.view.mxGraph;
+import sun.awt.WindowClosingListener;
+
+import javax.swing.*;
 
 
-public class MyApp extends Frame {
+public class MyApp extends JFrame {
     public MyApp(){
         addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent we)
@@ -112,6 +117,37 @@ public class MyApp extends Frame {
             //Component line = new C
 
         });
+
+
+        MenuItem createFromTemplate = new MenuItem("Создать из шаблона");
+        graph.add(createFromTemplate);
+        createFromTemplate.addActionListener(e -> {
+            System.out.println("from template");
+        });
+
+
+        mxGraph grph = new mxGraph();
+        Object parent = grph.getDefaultParent();
+
+        grph.getModel().beginUpdate();
+        try
+        {
+            Object v1 = grph.insertVertex(parent, null, "Hello", 20, 20, 80,
+                    30, "Rounded");
+            Object v2 = grph.insertVertex(parent, null, "World!", 240, 150,
+                    80, 30);
+            grph.insertEdge(parent, null, "Edge", v1, v2);
+            System.out.println(grph.getCellStyle(v1));
+        }
+        finally
+        {
+            grph.getModel().endUpdate();
+        }
+
+        mxGraphComponent graphComponent = new mxGraphComponent(grph);
+        this.getContentPane().add(graphComponent);
+        //this.getLayout().layoutContainer(graphComponent);
+        //this.lay
         //add(new Frame());
 
 
